@@ -7,6 +7,18 @@
 //
 import UIKit
 
+struct SearchCriteria {
+    var term: String
+    var sort: YelpSortMode
+    var categories: [String]
+    var deals: Bool
+}
+
+struct RestuarantCategory {
+    var title: String
+    var alias: String
+}
+
 class Business: NSObject {
     let name: String?
     let address: String?
@@ -74,6 +86,41 @@ class Business: NSObject {
         reviewCount = dictionary["review_count"] as? NSNumber
     }
     
+    class func getRestaurantCategories() -> [RestuarantCategory] {
+        
+        var restaurantCategories:[RestuarantCategory] = []
+        
+        do {
+            if let file = Bundle.main.url(forResource: "categories", withExtension: "json") {
+                let data = try Data(contentsOf: file)
+                let json = try JSONSerialization.jsonObject(with: data, options: [])
+                if let categoriesArray = json as? [[String: Any]] {
+                    
+                    for categoryObject in categoriesArray {
+                        
+                        if let parentNodes = categoryObject["parents"] as? [String] {
+                            if parentNodes.contains("restaurants") {
+                                
+                                let title = categoryObject["title"] as! String
+                                let alias = categoryObject["alias"] as! String
+                                
+                                restaurantCategories.append(RestuarantCategory(title: title, alias: alias))
+                            }
+                        }
+                        
+                    }
+                } else {
+                    print("JSON is invalid")
+                }
+            } else {
+                print("no file")
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
+        return restaurantCategories
+    }
+    
     class func businesses(array: [NSDictionary]) -> [Business] {
         var businesses = [Business]()
         for dictionary in array {
@@ -89,5 +136,10 @@ class Business: NSObject {
     
     class func searchWithTerm(term: String, sort: YelpSortMode?, categories: [String]?, deals: Bool?, completion: @escaping ([Business]?, Error?) -> Void) -> Void {
         _ = YelpClient.sharedInstance.searchWithTerm(term, sort: sort, categories: categories, deals: deals, completion: completion)
+    }
+    
+    class func searchWithCriteria(searchCriteria: SearchCriteria, completion: @escaping ([Business]?, Error?) -> Void) -> Void {
+        
+        _ = YelpClient.sharedInstance.searchWithTerm(searchCriteria.term, sort: searchCriteria.sort, categories: searchCriteria.categories, deals: searchCriteria.deals, completion: completion)
     }
 }

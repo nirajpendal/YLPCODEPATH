@@ -34,8 +34,9 @@ class BusinessSearchViewController: UIViewController,UISearchBarDelegate {
     
     @IBAction func filterButtonClicked(_ sender: Any) {
         
-        let targetVC = self.storyboard?.instantiateViewController(withIdentifier: "FilterViewController")
-        self.navigationController?.present(targetVC!, animated: true, completion: nil)
+        let targetVC = self.storyboard?.instantiateViewController(withIdentifier: "FilterViewController") as! FilterViewController
+        targetVC.delegate = self
+        self.navigationController?.present(targetVC, animated: true, completion: nil)
             
         
     }
@@ -46,12 +47,25 @@ class BusinessSearchViewController: UIViewController,UISearchBarDelegate {
  
     func doSearch(searchTerm: String) {
         Business.searchWithTerm(term:searchTerm , completion: { (businesses: [Business]?, error: Error?) -> Void in
-            self.businesses = businesses!
+            self.businesses = businesses ?? []
             self.searchTableView.reloadData()
         }
         )
     }
     
+    func doSearchWithSearchCriteria(searchCriteria:SearchCriteria)  {
+        Business.searchWithCriteria(searchCriteria: searchCriteria) { (businesses:[Business]?, error: Error?) in
+            self.businesses = businesses ?? []
+            self.searchTableView.reloadData()
+        }
+    }
+    
+}
+
+extension BusinessSearchViewController: FilterViewControllerDelegate {
+    func searchForUdpatedFilter(searchCriteria: SearchCriteria?){
+        self.doSearchWithSearchCriteria(searchCriteria: searchCriteria!)
+    }
 }
 
 extension BusinessSearchViewController: UITableViewDelegate, UITableViewDataSource{

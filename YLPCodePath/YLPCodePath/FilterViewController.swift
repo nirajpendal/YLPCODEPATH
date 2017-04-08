@@ -8,16 +8,25 @@
 
 import UIKit
 
+protocol FilterViewControllerDelegate: class {
+    func searchForUdpatedFilter(searchCriteria: SearchCriteria?)
+}
+
 class FilterViewController: UIViewController {
 
+    var filterCreteria : SearchCriteria!
+    
+    static let dealsSection = 0
+    static let restaurantCategoriesSection = 1
+    
     @IBOutlet weak var filterTableView: UITableView!
+    let categories = Business.getRestaurantCategories()
+    let offeringModel = [FilterModel(name: "Offering a Deal", isOn: false)]
     
-    let offeringCategories = [YelpCategory(name: "Offering a Deal", isOn: false)]
-    
-    let cuisines = [YelpCategory(name: "Afgan", isOn: false), YelpCategory(name: "African", isOn: false), YelpCategory(name: "American", isOn: false)]
+    //let cuisines = [FilterModel(name: "Afgan", isOn: false), FilterModel(name: "African", isOn: false), FilterModel(name: "American", isOn: false)]
     
     var filterCategories:[Int:[Any]]!
-    
+    weak var delegate: FilterViewControllerDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,9 +34,15 @@ class FilterViewController: UIViewController {
         filterTableView.rowHeight = UITableViewAutomaticDimension
         filterTableView.estimatedRowHeight = 50
 
-        filterCategories = [0: self.offeringCategories, 1: self.cuisines]
-        self.navigationController?.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(cancelTapped(_:)))
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(saveTapped(_:)))
+        self.filterCreteria = SearchCriteria(term: "", sort: .bestMatched, categories: [], deals: false)
+        
+        var restaurantCategories:[FilterModel] = []
+        
+        for category in categories {
+            restaurantCategories.append(FilterModel(name: category.title, isOn: false))
+        }
+        
+        filterCategories = [FilterViewController.dealsSection: self.offeringModel, FilterViewController.restaurantCategoriesSection: restaurantCategories]
         
         
         // Do any additional setup after loading the view.
@@ -38,12 +53,30 @@ class FilterViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    func cancelTapped(_ sender: Any) {
+    @IBAction func cancelTapped(_ sender: Any) {
         print("Cancel Tapped")
+        self.dismiss(animated: true, completion: nil)
     }
-    
-    func saveTapped(_ sender: Any) {
-        print("Save Tapped")
+    @IBAction func searchTapped(_ sender: Any) {
+        //print("Save Tapped")
+        
+        let restaurantCategories = self.filterCategories?[FilterViewController.restaurantCategoriesSection] as? [FilterModel]
+        
+        let onCategories = restaurantCategories?.filter({ (filterModel) -> Bool in
+            return filterModel.isOn
+        })
+        
+        for category in onCategories ?? [FilterModel](){
+            print(category.name)
+            let selectedCategories = categories.filter({ (restuarantCategory) -> Bool in
+                return category.name == restuarantCategory.title
+            })
+            
+            filterCreteria.categories.append(selectedCategories.first!.alias)
+        }
+        
+        delegate?.searchForUdpatedFilter(searchCriteria: filterCreteria)
+        self.dismiss(animated: true, completion: nil)
     }
     
 
@@ -60,25 +93,17 @@ class FilterViewController: UIViewController {
 }
 
 extension FilterViewController : SwitchCellDelegate {
-    func yelpCategoryValueChanged(cell:SwitchCell, yelpCategory: YelpCategory) {
+    func yelpCategoryValueChanged(cell:SwitchCell, filterModel: FilterModel) {
         
+        var indexPath = self.filterTableView.indexPath(for: cell)!
         
+        if indexPath.section == FilterViewController.dealsSection {
+            filterCreteria.deals = filterModel.isOn
+        }
         
-        let indexPath = self.filterTableView.indexPath(for: cell)!
-        
-        var categories = self.filterCategories?[indexPath.section]! as? [YelpCategory]
-        categories?[indexPath.row] = yelpCategory
-        
-        print("Before " )
-        print( self.filterCategories?[indexPath.section]! ?? "test")
-        
-        print("From Cell " + yelpCategory.name + yelpCategory.isOn.description )
-        
+        var categories = self.filterCategories?[indexPath.section]! as? [FilterModel]
+        categories?[indexPath.row] = filterModel
         self.filterCategories?[indexPath.section] = categories
-        
-        print("After " )
-        print(self.filterCategories?[indexPath.section]!.description ?? "test" )
-        
     }
 }
 
@@ -90,8 +115,8 @@ extension FilterViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchCell
-        let sectionArray = filterCategories[indexPath.section] as! [YelpCategory]
-        cell.category = sectionArray[indexPath.row]
+        let sectionArray = filterCategories[indexPath.section] as! [FilterModel]
+        cell.model = sectionArray[indexPath.row]
         cell.delegate = self
         return cell
     }

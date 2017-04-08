@@ -9,23 +9,23 @@
 import UIKit
 
 protocol SwitchCellDelegate: class {
-    func yelpCategoryValueChanged(cell:SwitchCell, yelpCategory: YelpCategory)
+    func yelpCategoryValueChanged(cell:SwitchCell, filterModel: FilterModel)
 }
 
-struct YelpCategory {
+struct FilterModel {
     var name:String
     var isOn: Bool
 }
 
 class SwitchCell: UITableViewCell {
 
-    var delegate : SwitchCellDelegate?
+    weak var delegate : SwitchCellDelegate?
     //var isOn:Bool = false
     
-    var category:YelpCategory! {
+    var model:FilterModel! {
         didSet{
-            self.nameLabel.text = category.name
-            self.switchComponent.isOn = category.isOn
+            self.nameLabel.text = model.name
+            self.switchComponent.isOn = model.isOn
         }
     }
     
@@ -37,7 +37,7 @@ class SwitchCell: UITableViewCell {
     }
     
     @IBAction func valueChanged(_ sender: Any) {
-        self.delegate?.yelpCategoryValueChanged(cell: self, yelpCategory: YelpCategory(name: self.category.name, isOn: self.switchComponent.isOn))
+        self.delegate?.yelpCategoryValueChanged(cell: self, filterModel: FilterModel(name: self.model.name, isOn: self.switchComponent.isOn))
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {

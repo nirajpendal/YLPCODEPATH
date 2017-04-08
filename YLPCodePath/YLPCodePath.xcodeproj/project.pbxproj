@@ -17,6 +17,7 @@
 		886CC7961E9711D300DBC90B /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 886CC7951E9711D300DBC90B /* FilterViewController.swift */; };
 		886CC79B1E9762F400DBC90B /* SwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 886CC79A1E9762F400DBC90B /* SwitchCell.swift */; };
 		88CA59141E958F0900E64DD0 /* Business.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88CA59131E958F0900E64DD0 /* Business.swift */; };
+		88D4F68D1E98584100D8879A /* categories.json in Resources */ = {isa = PBXBuildFile; fileRef = 88D4F68C1E98584100D8879A /* categories.json */; };
 		88F72A7B1E960E0300F71C34 /* SearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88F72A7A1E960E0300F71C34 /* SearchCell.swift */; };
 /* End PBXBuildFile section */
 
@@ -33,6 +34,7 @@
 		886CC7951E9711D300DBC90B /* FilterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
 		886CC79A1E9762F400DBC90B /* SwitchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwitchCell.swift; path = Views/SwitchCell.swift; sourceTree = "<group>"; };
 		88CA59131E958F0900E64DD0 /* Business.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Business.swift; path = Model/Business.swift; sourceTree = "<group>"; };
+		88D4F68C1E98584100D8879A /* categories.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = categories.json; sourceTree = "<group>"; };
 		88F72A7A1E960E0300F71C34 /* SearchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SearchCell.swift; path = Views/SearchCell.swift; sourceTree = "<group>"; };
 		8FDE9ED6EA9FCC1B3D964A74 /* Pods-YLPCodePath.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YLPCodePath.release.xcconfig"; path = "Pods/Target Support Files/Pods-YLPCodePath/Pods-YLPCodePath.release.xcconfig"; sourceTree = "<group>"; };
 		CCB7CADA419B1F4F22F98C40 /* Pods_YLPCodePath.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YLPCodePath.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -104,6 +106,7 @@
 		88F72A781E95FA2400F71C34 /* API */ = {
 			isa = PBXGroup;
 			children = (
+				88D4F68C1E98584100D8879A /* categories.json */,
 				886317AE1E95686A001CC3AC /* YelpClient.swift */,
 			);
 			name = API;
@@ -190,6 +193,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				886317A61E95651A001CC3AC /* LaunchScreen.storyboard in Resources */,
+				88D4F68D1E98584100D8879A /* categories.json in Resources */,
 				886317A31E95651A001CC3AC /* Assets.xcassets in Resources */,
 				886317A11E95651A001CC3AC /* Main.storyboard in Resources */,
 			);
