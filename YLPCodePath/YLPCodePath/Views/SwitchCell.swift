@@ -12,9 +12,65 @@ protocol SwitchCellDelegate: class {
     func yelpCategoryValueChanged(cell:SwitchCell, filterModel: FilterModel)
 }
 
-struct FilterModel {
+protocol FilterModel {
+    var name:String {get set}
+    var isOn: Bool {get set}
+    var isExpandable: Bool {get set}
+    var isExpanded: Bool {get set}
+    var isVisible: Bool {get set}
+    var additionalRows: Int {get set}
+    
+}
+
+struct FilterDealsModel: FilterModel {
+    
     var name:String
     var isOn: Bool
+    var isExpanded: Bool = false
+    var isExpandable: Bool = false
+    var additionalRows: Int = 0
+    var isVisible: Bool = true
+    
+    init(name: String, isOn: Bool) {
+        self.name = name
+        self.isOn = isOn
+    }
+}
+
+struct FilterCategoriesModel: FilterModel {
+    
+    var name:String
+    var isOn: Bool
+    var isExpanded: Bool = false
+    var isExpandable: Bool = false
+    var additionalRows: Int = 0
+    var isVisible: Bool = true
+    
+    init(name: String, isOn: Bool) {
+        self.name = name
+        self.isOn = isOn
+    }
+}
+
+struct FilterSortByModel: FilterModel {
+    
+    var name:String
+    var isOn: Bool
+    var isExpanded: Bool
+    var isExpandable: Bool
+    var additionalRows: Int
+    var isVisible: Bool
+}
+
+
+struct FilterDistanceModel: FilterModel {
+    
+    var name:String
+    var isOn: Bool
+    var isExpanded: Bool
+    var isExpandable: Bool
+    var additionalRows: Int
+    var isVisible: Bool
 }
 
 class SwitchCell: UITableViewCell {
@@ -37,7 +93,8 @@ class SwitchCell: UITableViewCell {
     }
     
     @IBAction func valueChanged(_ sender: Any) {
-        self.delegate?.yelpCategoryValueChanged(cell: self, filterModel: FilterModel(name: self.model.name, isOn: self.switchComponent.isOn))
+        self.model.isOn = self.switchComponent.isOn
+       self.delegate?.yelpCategoryValueChanged(cell: self, filterModel: self.model)
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {

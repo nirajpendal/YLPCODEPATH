@@ -28,6 +28,7 @@ class BusinessSearchViewController: UIViewController,UISearchBarDelegate {
         
         self.searchTableView.rowHeight = UITableViewAutomaticDimension
         self.searchTableView.estimatedRowHeight = 120
+        self.navigationController?.navigationBar.barTintColor = UIColor.red
         
         // Do any additional setup after loading the view, typically from a nib.
     }
